@@ -1,4 +1,4 @@
-Todo Frontend - Ocean Professional
+Things Todo - Ocean Professional
 
 Features
 - Supabase email/password authentication
@@ -15,7 +15,7 @@ Setup
 4) Run the app: npm start
 
 Notes
-- The app uses Supabase client in src/services/supabaseClient.js.
+- Things Todo uses a Supabase client in src/services/supabaseClient.js.
 - Auth view: src/components/AuthView.jsx
 - Todo view and items: src/components/TodoView.jsx, TodoItem.jsx, TodoInput.jsx
 

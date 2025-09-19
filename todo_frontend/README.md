@@ -1,6 +1,6 @@
 # Lightweight React Template for KAVIA
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+This project provides a minimal React template with a clean, modern UI and minimal dependencies. It powers the Things Todo app in this repository.
 
 ## Features
 

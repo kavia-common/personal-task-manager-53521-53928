@@ -1,11 +1,11 @@
-Supabase Integration - Frontend (todo_frontend)
+Supabase Integration - Frontend (Things Todo)
 
-Environment variables (set these in .env at the root of the todo_frontend app):
+Environment variables (set these in .env at the root of the Things Todo app):
 - REACT_APP_SUPABASE_URL: e.g., https://YOUR-PROJECT-REF.supabase.co
 - REACT_APP_SUPABASE_KEY: the anon public API key
 
 Auth:
-- This app uses email/password authentication.
+- Things Todo uses email/password authentication.
 - Sign up will use options.emailRedirectTo = window.location.origin.
 - After confirming (if email confirm is enabled), users can sign in.
 

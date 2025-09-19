@@ -7,7 +7,7 @@ import TodoView from './components/TodoView';
 import ThemeToggle from './components/ThemeToggle';
 
 /**
- * App entry: switches between unauthenticated Authentication UI and the authenticated Todo UI.
+ * App entry for Things Todo: switches between unauthenticated Authentication UI and the authenticated Todo UI.
  * Applies Ocean Professional theme styles and manages dark/light preference.
  */
 // PUBLIC_INTERFACE
@@ -22,6 +22,11 @@ function App() {
     // Apply theme attribute for CSS variables
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    // Set the page title to the app name
+    document.title = 'Things Todo';
+  }, []);
 
   useEffect(() => {
     // Initialize session and listen for auth changes
@@ -48,7 +53,7 @@ function App() {
       <div className="ocean-gradient" aria-hidden="true"></div>
       <main className="container">
         <header className="header">
-          <h1 className="title">Ocean Tasks</h1>
+          <h1 className="title">Things Todo</h1>
           <p className="subtitle">Minimal, fast, and focused.</p>
           <div className="header-actions" role="group" aria-label="Display controls">
             <ThemeToggle theme={theme} onToggle={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')} />
