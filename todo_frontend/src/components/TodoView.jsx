@@ -12,18 +12,22 @@ import TodoItem from './TodoItem';
 export default function TodoView({ user }) {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   // Initial fetch
   useEffect(() => {
     let isMounted = true;
     (async () => {
       setLoading(true);
+      setLoadError('');
       try {
         const data = await fetchTodos(user.id);
         if (isMounted) setTodos(data);
       } catch (e) {
-        // For simplicity, log; in production show user message
         console.error(e);
+        if (isMounted) {
+          setLoadError(e?.message || 'Failed to load your tasks. Check database policies and network.');
+        }
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -33,27 +37,32 @@ export default function TodoView({ user }) {
 
   // Real-time updates
   useEffect(() => {
-    // Subscribe to changes for this user's todos
+    // Subscribe to only this user's todo changes on the server side to avoid noisy/unrelated events.
     const channel = supabase
       .channel('todos-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'todos' }, payload => {
-        const row = payload.new ?? payload.old;
-        // Filter only events relevant to this user
-        if (!row || row.user_id !== user.id) return;
-
-        setTodos(prev => {
-          switch (payload.eventType) {
-            case 'INSERT':
-              return [payload.new, ...prev];
-            case 'UPDATE':
-              return prev.map(t => (t.id === payload.new.id ? payload.new : t));
-            case 'DELETE':
-              return prev.filter(t => t.id !== payload.old.id);
-            default:
-              return prev;
-          }
-        });
-      })
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'todos',
+          filter: `user_id=eq.${user.id}`
+        },
+        payload => {
+          setTodos(prev => {
+            switch (payload.eventType) {
+              case 'INSERT':
+                return [payload.new, ...prev];
+              case 'UPDATE':
+                return prev.map(t => (t.id === payload.new.id ? payload.new : t));
+              case 'DELETE':
+                return prev.filter(t => t.id !== payload.old.id);
+              default:
+                return prev;
+            }
+          });
+        }
+      )
       .subscribe();
 
     return () => {
@@ -97,6 +106,10 @@ export default function TodoView({ user }) {
       <div className="todo-list" role="list" aria-busy={loading}>
         {loading ? (
           <p className="helper">Loading your tasks…</p>
+        ) : loadError ? (
+          <p className="helper" style={{ color: 'var(--error)' }}>
+            {loadError}
+          </p>
         ) : todos.length === 0 ? (
           <p className="helper">No tasks yet. Add your first one!</p>
         ) : (
