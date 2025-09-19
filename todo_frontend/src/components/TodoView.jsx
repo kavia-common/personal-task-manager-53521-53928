@@ -63,9 +63,14 @@ export default function TodoView({ user }) {
 
   // PUBLIC_INTERFACE
   const handleAdd = async (title) => {
-    const created = await addTodo({ userId: user.id, title });
-    // Optimistic update is unnecessary due to realtime, but keep in case channel is disabled
-    setTodos(prev => [created, ...prev]);
+    try {
+      const created = await addTodo({ userId: user.id, title });
+      // Optimistic update is unnecessary due to realtime, but keep in case channel is disabled
+      setTodos(prev => [created, ...prev]);
+    } catch (err) {
+      // Log for developers; in a larger app, lift a toast/message.
+      console.error('Failed to add todo:', err?.message || err);
+    }
   };
 
   // PUBLIC_INTERFACE
